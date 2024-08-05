@@ -20,10 +20,21 @@ type Contact struct {
 	UpdatedAt time.Time `json:"-"`
 }
 
-type User struct {
+type Template struct {
 	ID        uint
-	Username  string
-	templates []string
+	Text      string
+	UserID    uint
+	User      User
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+type User struct {
+	ID           uint
+	Username     string `gorm:"unique"`
+	Salt         string
+	PasswordHash string
+	templates    []string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
