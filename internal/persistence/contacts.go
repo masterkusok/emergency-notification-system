@@ -1,12 +1,18 @@
 package persistence
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/masterkusok/emergency-notification-system/internal/entities"
 	"gorm.io/gorm"
 )
 
 type ContactRepository struct {
-	db *gorm.DB
+	baseRepository
+}
+
+func CreateContactRepository(db *gorm.DB) *ContactRepository {
+	repo := ContactRepository{baseRepository{db: db, validator: validator.New()}}
+	return &repo
 }
 
 func (c *ContactRepository) GetSingleContact(id uint) (entities.Contact, error) {
@@ -24,6 +30,10 @@ func (c *ContactRepository) GetUserContacts(userId uint) ([]entities.Contact, er
 func (c *ContactRepository) CreateContacts(userId uint, contacts []entities.Contact) error {
 	for _, contact := range contacts {
 		contact.UserID = userId
+		err := c.validator.Struct(contact)
+		if err != nil {
+			return err
+		}
 	}
 	ctx := c.db.Create(contacts)
 	return ctx.Error
@@ -44,6 +54,10 @@ func (c *ContactRepository) UpdateContact(id uint, name, address string) error {
 	}
 	if address != "" {
 		contact.Address = address
+	}
+	err = c.validator.Struct(contact)
+	if err != nil {
+		return err
 	}
 	ctx := c.db.Save(contact)
 	return ctx.Error

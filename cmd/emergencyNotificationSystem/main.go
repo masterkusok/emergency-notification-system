@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/masterkusok/emergency-notification-system/internal/entities"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -16,5 +15,4 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("abc")
 }

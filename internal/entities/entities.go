@@ -1,6 +1,9 @@
 package entities
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 const (
 	TG = iota
@@ -10,31 +13,35 @@ const (
 )
 
 type Contact struct {
+	gorm.Model
 	ID        uint      `json:"-"`
 	UserID    uint      `json:"-"`
 	User      User      `json:"-"`
-	Platform  int       `json:"platform"`
-	Name      string    `json:"name"`
-	Address   string    `json:"address"`
+	Platform  int       `json:"platform" validate:"required"`
+	Name      string    `json:"name" validate:"required"`
+	Address   string    `json:"address" validate:"required"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
 
 type Template struct {
+	gorm.Model
 	ID        uint
-	Text      string
+	Text      string `validate:"required"`
 	UserID    uint
-	User      User
+	User      User `validate:"required"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 type User struct {
+	gorm.Model
 	ID           uint
-	Username     string `gorm:"unique"`
+	Username     string `gorm:"unique" validate:"required"`
 	Salt         string
 	PasswordHash string
 	templates    []string
+	contacts     []Contact
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
