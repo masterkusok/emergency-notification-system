@@ -26,12 +26,12 @@ type Contact struct {
 
 type Template struct {
 	gorm.Model
-	ID        uint
-	Text      string `validate:"required"`
-	UserID    uint
-	User      User `validate:"required"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uint      `json:"id"`
+	Text      string    `validate:"required" json:"text"`
+	UserID    uint      `json:"-"`
+	User      User      `validate:"required" json:"-"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
 
 type User struct {

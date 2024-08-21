@@ -15,17 +15,23 @@ func CreateTemplateRepository(db *gorm.DB) *TemplateRepository {
 	return repo
 }
 
-func (t *TemplateRepository) CreateTemplate(userId uint, text string) (*entities.Template, error) {
+func (t *TemplateRepository) GetUserTemplates(userId uint) ([]entities.Template, error) {
+	templates := make([]entities.Template, 1)
+	ctx := t.db.Where(entities.Template{UserID: userId}).Find(&templates)
+	return templates, ctx.Error
+}
+
+func (t *TemplateRepository) CreateTemplate(userId uint, text string) error {
 	template := &entities.Template{UserID: userId, Text: text}
 	err := t.validator.Struct(template)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	ctx := t.db.Create(template)
-	return template, ctx.Error
+	return ctx.Error
 }
 
 func (t *TemplateRepository) DeleteTemplate(templateId uint) error {
-	ctx := t.db.Delete(templateId)
+	ctx := t.db.Delete(&entities.Template{}, templateId)
 	return ctx.Error
 }

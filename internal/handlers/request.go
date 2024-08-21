@@ -9,3 +9,7 @@ type deleteContactsRequest struct {
 type updateContactRequest struct {
 	Contact entities.Contact `json:"contact"`
 }
+
+type createTemplateRequest struct {
+	Text string `json:"text"`
+}

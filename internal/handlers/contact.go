@@ -15,7 +15,7 @@ var allowedExtensions = map[string]int{
 }
 
 func (h *ContactHandler) LoadContacts(c echo.Context) error {
-	userId, err := strconv.Atoi(c.Param("id"))
+	userId, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func (h *ContactHandler) LoadContacts(c echo.Context) error {
 }
 
 func (h *ContactHandler) GetUserContacts(c echo.Context) error {
-	userId, err := strconv.Atoi(c.Param("id"))
+	userId, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {
 		return err
 	}

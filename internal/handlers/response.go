@@ -20,12 +20,10 @@ func (r *manyContactsResponse) Seed(contacts []entities.Contact) {
 	r.Contacts = contacts
 }
 
-type singleTemplateResponse struct {
-	Id     uint   `json:"template_id"`
-	UserId uint   `json:"user_id"`
-	Text   string `json:"text"`
+type manyTemplatesResponse struct {
+	Templates []entities.Template `json:"templates"`
 }
 
-type manyTemplatesResponse struct {
-	Templates []singleTemplateResponse `json:"templates"`
+func (r *manyTemplatesResponse) Seed(templates []entities.Template) {
+	r.Templates = templates
 }
