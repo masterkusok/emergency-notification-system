@@ -17,10 +17,6 @@ func CreateUserRepository(db *gorm.DB) *UserRepository {
 
 func (u *UserRepository) CreateUser(username, salt, hash string) (*entities.User, error) {
 	user := &entities.User{Username: username, Salt: salt, PasswordHash: hash}
-	err := u.validator.Struct(user)
-	if err != nil {
-		return nil, err
-	}
 	ctx := u.db.Create(user)
 	return user, ctx.Error
 }
@@ -28,5 +24,11 @@ func (u *UserRepository) CreateUser(username, salt, hash string) (*entities.User
 func (u *UserRepository) GetUserById(id uint) (*entities.User, error) {
 	user := &entities.User{}
 	ctx := u.db.Find(user, id)
+	return user, ctx.Error
+}
+
+func (u *UserRepository) GetUserByName(username string) (*entities.User, error) {
+	user := &entities.User{}
+	ctx := u.db.Where("username = ?", username).First(user)
 	return user, ctx.Error
 }

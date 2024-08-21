@@ -22,6 +22,7 @@ type ContactLoader struct {
 
 func CreateContactLoader() *ContactLoader {
 	cl := ContactLoader{}
+	cl.parsers = make([]parser, 4)
 	cl.parsers[JSON] = JsonParser{}
 	cl.parsers[CSV] = CsvParser{}
 	cl.parsers[XLSX] = XlsxParser{}

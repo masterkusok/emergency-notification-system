@@ -17,7 +17,7 @@ type Contact struct {
 	ID        uint      `json:"-"`
 	UserID    uint      `json:"-"`
 	User      User      `json:"-"`
-	Platform  int       `json:"platform" validate:"required"`
+	Platform  int       `json:"platform"`
 	Name      string    `json:"name" validate:"required"`
 	Address   string    `json:"address" validate:"required"`
 	CreatedAt time.Time `json:"-"`
@@ -37,7 +37,7 @@ type Template struct {
 type User struct {
 	gorm.Model
 	ID           uint
-	Username     string `gorm:"unique" validate:"required"`
+	Username     string `gorm:"unique"`
 	Salt         string
 	PasswordHash string
 	templates    []string

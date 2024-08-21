@@ -23,7 +23,7 @@ func (c *ContactRepository) GetSingleContact(id uint) (entities.Contact, error) 
 
 func (c *ContactRepository) GetUserContacts(userId uint) ([]entities.Contact, error) {
 	contacts := make([]entities.Contact, 0)
-	ctx := c.db.Where("user_id = ?", userId).Find(&contacts)
+	ctx := c.db.Where(entities.Contact{UserID: userId}).Find(&contacts)
 	return contacts, ctx.Error
 }
 
@@ -39,8 +39,8 @@ func (c *ContactRepository) CreateContacts(userId uint, contacts []entities.Cont
 	return ctx.Error
 }
 
-func (c *ContactRepository) DeleteContacts(contacts []entities.Contact) error {
-	ctx := c.db.Delete(contacts)
+func (c *ContactRepository) DeleteContacts(id []uint) error {
+	ctx := c.db.Delete(id)
 	return ctx.Error
 }
 
