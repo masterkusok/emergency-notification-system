@@ -7,11 +7,7 @@ import (
 )
 
 func (h *TemplateHandler) GetUserTemplates(c echo.Context) error {
-	userId, err := strconv.Atoi(c.Param("userId"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, nil)
-	}
-
+	userId := c.(*AuthContext).Id
 	templates, err := h.provider.GetUserTemplates(uint(userId))
 	if err != nil {
 		return err
@@ -23,17 +19,13 @@ func (h *TemplateHandler) GetUserTemplates(c echo.Context) error {
 }
 
 func (h *TemplateHandler) CreateTemplate(c echo.Context) error {
-	userId, err := strconv.Atoi(c.Param("userId"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, nil)
-	}
-
+	userId := c.(*AuthContext).Id
 	request := new(createTemplateRequest)
 	if err := c.Bind(request); err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
 
-	err = h.provider.CreateTemplate(uint(userId), request.Text)
+	err := h.provider.CreateTemplate(uint(userId), request.Text)
 	if err != nil {
 		return err
 	}

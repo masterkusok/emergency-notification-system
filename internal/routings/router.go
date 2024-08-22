@@ -3,23 +3,34 @@ package routings
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/masterkusok/emergency-notification-system/internal/handlers"
+	"github.com/masterkusok/emergency-notification-system/internal/middleware"
 )
 
-const PREFIX = "/api/v1/"
+const PREFIX = "/api/v1"
 
-func New(contactHandler *handlers.ContactHandler, templateHandler *handlers.TemplateHandler) *echo.Echo {
+func New(contactHandler *handlers.ContactHandler, templateHandler *handlers.TemplateHandler, authHandler *handlers.AuthHandler) *echo.Echo {
 	e := echo.New()
 
+	guestGroup := e.Group(PREFIX + "/auth")
+	authGroup := e.Group(PREFIX)
+
+	authGroup.Use(middleware.AuthJWT)
+
 	// contact routes
-	e.POST(PREFIX+"users/:userId/contacts", contactHandler.LoadContacts)
-	e.GET(PREFIX+"users/:userId/contacts", contactHandler.GetUserContacts)
-	e.DELETE(PREFIX+"users/:userId/contacts", contactHandler.DeleteContacts)
-	e.PUT(PREFIX+"users/:userId/contacts/:contactId", contactHandler.UpdateContact)
+	authGroup.POST("/contacts", contactHandler.LoadContacts)
+	authGroup.GET("/contacts", contactHandler.GetUserContacts)
+	authGroup.DELETE("/contacts", contactHandler.DeleteContacts)
+	authGroup.PUT("/contacts/:contactId", contactHandler.UpdateContact)
 
 	// template routes
-	e.POST(PREFIX+"users/:userId/templates", templateHandler.CreateTemplate)
-	e.GET(PREFIX+"users/:userId/templates", templateHandler.GetUserTemplates)
-	e.DELETE(PREFIX+"users/:userId/templates/:templateId", templateHandler.DeleteTemplate)
+	authGroup.POST("/templates", templateHandler.CreateTemplate)
+	authGroup.GET("/templates", templateHandler.GetUserTemplates)
+	authGroup.DELETE("/templates/:templateId", templateHandler.DeleteTemplate)
 
+	authGroup.GET("/current", authHandler.CurrentUser)
+
+	// auth routes
+	guestGroup.POST("/register", authHandler.SignUp)
+	guestGroup.POST("/login", authHandler.SignIn)
 	return e
 }

@@ -21,7 +21,8 @@ func main() {
 	loader := loaders.CreateContactLoader()
 	contactRepo := persistence.CreateContactRepository(db)
 	templateRepo := persistence.CreateTemplateRepository(db)
-	router := routings.New(handlers.NewContactHandler(contactRepo, loader), handlers.NewTemplateHandler(templateRepo))
+	userRepo := persistence.CreateUserRepository(db)
+	router := routings.New(handlers.NewContactHandler(contactRepo, loader), handlers.NewTemplateHandler(templateRepo), handlers.NewAuthHandler(userRepo))
 
 	router.Logger.Fatal(router.Start(":1323"))
 }

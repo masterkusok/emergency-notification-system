@@ -15,14 +15,11 @@ var allowedExtensions = map[string]int{
 }
 
 func (h *ContactHandler) LoadContacts(c echo.Context) error {
-	userId, err := strconv.Atoi(c.Param("userId"))
-	if err != nil {
-		return err
-	}
+	userId := c.(*AuthContext).Id
 
 	file, err := c.FormFile("file")
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, nil)
 	}
 
 	extension := allowedExtensions[filepath.Ext(file.Filename)] - 1
@@ -37,21 +34,18 @@ func (h *ContactHandler) LoadContacts(c echo.Context) error {
 	defer src.Close()
 
 	contacts, err := h.loader.ParseFrom(src, extension)
-	if err := h.provider.CreateContacts(uint(userId), contacts); err != nil {
+	if err := h.provider.CreateContacts(userId, contacts); err != nil {
 		return err
 	}
 	return c.JSON(http.StatusCreated, nil)
 }
 
 func (h *ContactHandler) GetUserContacts(c echo.Context) error {
-	userId, err := strconv.Atoi(c.Param("userId"))
-	if err != nil {
-		return err
-	}
+	userId := c.(*AuthContext).Id
 
-	contacts, err := h.provider.GetUserContacts(uint(userId))
+	contacts, err := h.provider.GetUserContacts(userId)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, nil)
 	}
 	response := new(manyContactsResponse)
 	response.Seed(contacts)
@@ -75,12 +69,12 @@ func (h *ContactHandler) DeleteContacts(c echo.Context) error {
 func (h *ContactHandler) UpdateContact(c echo.Context) error {
 	contactId, err := strconv.Atoi(c.Param(":contactId"))
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, nil)
 	}
 
 	request := new(updateContactRequest)
 	if err = c.Bind(&request); err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, nil)
 	}
 
 	if err = h.provider.UpdateContact(uint(contactId), request.Contact.Name, request.Contact.Address); err != nil {

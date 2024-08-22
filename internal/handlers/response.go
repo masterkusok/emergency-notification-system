@@ -27,3 +27,23 @@ type manyTemplatesResponse struct {
 func (r *manyTemplatesResponse) Seed(templates []entities.Template) {
 	r.Templates = templates
 }
+
+type signInResponse struct {
+	IsSuccessful bool   `json:"is_successful"`
+	Token        string `json:"token"`
+	Message      string `json:"message"`
+}
+
+func (r *signInResponse) Seed(isSuccessful bool, token, message string) {
+	r.IsSuccessful = isSuccessful
+	r.Message = message
+	r.Token = token
+}
+
+type ForbiddenResponse struct {
+	Message string `json:"message"`
+}
+
+func GetForbiddenResponse() *ForbiddenResponse {
+	return &ForbiddenResponse{Message: "authorization is required for this request"}
+}

@@ -40,7 +40,7 @@ func (c *ContactRepository) CreateContacts(userId uint, contacts []entities.Cont
 }
 
 func (c *ContactRepository) DeleteContacts(id []uint) error {
-	ctx := c.db.Delete(id)
+	ctx := c.db.Delete(&entities.Contact{}, id)
 	return ctx.Error
 }
 

@@ -34,3 +34,17 @@ type TemplateHandler struct {
 func NewTemplateHandler(provider templateProvider) *TemplateHandler {
 	return &TemplateHandler{provider: provider}
 }
+
+type userProvider interface {
+	CreateUser(username, salt, hash string) (*entities.User, error)
+	GetUserById(id uint) (*entities.User, error)
+	GetUserByName(username string) (*entities.User, error)
+}
+
+type AuthHandler struct {
+	provider userProvider
+}
+
+func NewAuthHandler(provider userProvider) *AuthHandler {
+	return &AuthHandler{provider: provider}
+}

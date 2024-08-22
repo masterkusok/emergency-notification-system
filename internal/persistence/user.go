@@ -29,6 +29,6 @@ func (u *UserRepository) GetUserById(id uint) (*entities.User, error) {
 
 func (u *UserRepository) GetUserByName(username string) (*entities.User, error) {
 	user := &entities.User{}
-	ctx := u.db.Where("username = ?", username).First(user)
+	ctx := u.db.Where(&entities.User{Username: username}).First(user)
 	return user, ctx.Error
 }

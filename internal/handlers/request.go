@@ -13,3 +13,13 @@ type updateContactRequest struct {
 type createTemplateRequest struct {
 	Text string `json:"text"`
 }
+
+type signUpRequest struct {
+	Name     string `json:"username"`
+	Password string `json:"password"`
+}
+
+type signInRequest struct {
+	Name     string `json:"username"`
+	Password string `json:"password"`
+}
