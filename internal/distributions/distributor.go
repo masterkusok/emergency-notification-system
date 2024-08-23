@@ -25,6 +25,7 @@ type Distributor struct {
 
 func CreateDistributor() *Distributor {
 	d := Distributor{}
+	d.senders = make([]Sender, 4)
 	d.senders[entities.TG] = mockSender{}
 	d.senders[entities.SMS] = mockSender{}
 	d.senders[entities.EMAIL] = mockSender{}

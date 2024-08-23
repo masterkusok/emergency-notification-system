@@ -28,9 +28,9 @@ func (c *ContactRepository) GetUserContacts(userId uint) ([]entities.Contact, er
 }
 
 func (c *ContactRepository) CreateContacts(userId uint, contacts []entities.Contact) error {
-	for _, contact := range contacts {
-		contact.UserID = userId
-		err := c.validator.Struct(contact)
+	for i := range contacts {
+		contacts[i].UserID = userId
+		err := c.validator.Struct(contacts[i])
 		if err != nil {
 			return err
 		}

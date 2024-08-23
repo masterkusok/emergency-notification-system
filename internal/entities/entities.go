@@ -40,8 +40,8 @@ type User struct {
 	Username     string `gorm:"unique"`
 	Salt         string
 	PasswordHash string
-	templates    []string
-	contacts     []Contact
+	Templates    []Template
+	Contacts     []Contact
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

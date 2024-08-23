@@ -8,7 +8,8 @@ import (
 
 const PREFIX = "/api/v1"
 
-func New(contactHandler *handlers.ContactHandler, templateHandler *handlers.TemplateHandler, authHandler *handlers.AuthHandler) *echo.Echo {
+func New(contactHandler *handlers.ContactHandler, templateHandler *handlers.TemplateHandler,
+	authHandler *handlers.AuthHandler, distributionHandler *handlers.DistributionHandler) *echo.Echo {
 	e := echo.New()
 
 	guestGroup := e.Group(PREFIX + "/auth")
@@ -27,6 +28,7 @@ func New(contactHandler *handlers.ContactHandler, templateHandler *handlers.Temp
 	authGroup.GET("/templates", templateHandler.GetUserTemplates)
 	authGroup.DELETE("/templates/:templateId", templateHandler.DeleteTemplate)
 
+	authGroup.POST("/distribute/:templateId", distributionHandler.Distribute)
 	authGroup.GET("/current", authHandler.CurrentUser)
 
 	// auth routes

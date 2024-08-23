@@ -22,13 +22,19 @@ func (u *UserRepository) CreateUser(username, salt, hash string) (*entities.User
 }
 
 func (u *UserRepository) GetUserById(id uint) (*entities.User, error) {
-	user := &entities.User{}
+	user := new(entities.User)
 	ctx := u.db.Find(user, id)
 	return user, ctx.Error
 }
 
 func (u *UserRepository) GetUserByName(username string) (*entities.User, error) {
-	user := &entities.User{}
+	user := new(entities.User)
 	ctx := u.db.Where(&entities.User{Username: username}).First(user)
 	return user, ctx.Error
+}
+
+func (u *UserRepository) GetUserEager(id uint) (*entities.User, error) {
+	user := new(entities.User)
+	err := u.db.Model(&entities.User{}).Preload("Contacts").Preload("Templates").Find(user, id).Error
+	return user, err
 }

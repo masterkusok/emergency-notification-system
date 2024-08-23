@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/masterkusok/emergency-notification-system/internal/distributions"
 	"github.com/masterkusok/emergency-notification-system/internal/entities"
 	"github.com/masterkusok/emergency-notification-system/internal/loaders"
 )
@@ -47,4 +48,17 @@ type AuthHandler struct {
 
 func NewAuthHandler(provider userProvider) *AuthHandler {
 	return &AuthHandler{provider: provider}
+}
+
+type eagerUserProvider interface {
+	GetUserEager(uint) (*entities.User, error)
+}
+
+type DistributionHandler struct {
+	distributor  *distributions.Distributor
+	userProvider eagerUserProvider
+}
+
+func NewDistributionHandler(distributor *distributions.Distributor, provider eagerUserProvider) *DistributionHandler {
+	return &DistributionHandler{distributor: distributor, userProvider: provider}
 }
