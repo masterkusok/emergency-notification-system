@@ -7,10 +7,18 @@ import (
 	"fmt"
 	"github.com/masterkusok/emergency-notification-system/internal/entities"
 	"github.com/xuri/excelize/v2"
+	"io"
 	"os"
 	"strconv"
 	"testing"
 )
+
+func TestCreateContactLoader(t *testing.T) {
+	loader := CreateContactLoader()
+	if len(loader.parsers) != 4 {
+		t.Fail()
+	}
+}
 
 func TestCsvParser_Parse(t *testing.T) {
 	expectedContacts := []entities.Contact{
@@ -160,4 +168,37 @@ func TestXlsxParser_Parse(t *testing.T) {
 		}
 	}
 	os.Remove("temp.xlsx")
+}
+
+type mockLoader struct {
+	platform int
+	counter  *int
+}
+
+func (m mockLoader) Parse(reader io.Reader) ([]entities.Contact, error) {
+	*m.counter++
+	return make([]entities.Contact, m.platform), nil
+}
+
+func TestContactLoader_ParseFrom(t *testing.T) {
+	loader := CreateContactLoader()
+	counter := new(int)
+	loader.parsers[entities.TG] = mockLoader{platform: entities.TG, counter: counter}
+	loader.parsers[entities.SMS] = mockLoader{platform: entities.SMS, counter: counter}
+	loader.parsers[entities.EMAIL] = mockLoader{platform: entities.EMAIL, counter: counter}
+
+	tgRes, err := loader.ParseFrom(nil, entities.TG)
+	if err != nil || len(tgRes) != entities.TG {
+		t.Fail()
+	}
+
+	smsRes, err := loader.ParseFrom(nil, entities.SMS)
+	if err != nil || len(smsRes) != entities.SMS {
+		t.Fail()
+	}
+
+	emailRes, err := loader.ParseFrom(nil, entities.EMAIL)
+	if err != nil || len(emailRes) != entities.EMAIL {
+		t.Fail()
+	}
 }
