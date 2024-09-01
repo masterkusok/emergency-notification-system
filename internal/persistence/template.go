@@ -1,7 +1,6 @@
 package persistence
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/masterkusok/emergency-notification-system/internal/entities"
 	"gorm.io/gorm"
 )
@@ -11,7 +10,7 @@ type TemplateRepository struct {
 }
 
 func CreateTemplateRepository(db *gorm.DB) *TemplateRepository {
-	repo := &TemplateRepository{baseRepository{db: db, validator: validator.New()}}
+	repo := &TemplateRepository{baseRepository{db: db}}
 	return repo
 }
 
@@ -23,10 +22,6 @@ func (t *TemplateRepository) GetUserTemplates(userId uint) ([]entities.Template,
 
 func (t *TemplateRepository) CreateTemplate(userId uint, text string) error {
 	template := &entities.Template{UserID: userId, Text: text}
-	err := t.validator.Struct(template)
-	if err != nil {
-		return err
-	}
 	ctx := t.db.Create(template)
 	return ctx.Error
 }

@@ -1,7 +1,6 @@
 package persistence
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/masterkusok/emergency-notification-system/internal/entities"
 	"gorm.io/gorm"
 )
@@ -11,7 +10,7 @@ type UserRepository struct {
 }
 
 func CreateUserRepository(db *gorm.DB) *UserRepository {
-	repo := UserRepository{baseRepository{db: db, validator: validator.New()}}
+	repo := UserRepository{baseRepository{db: db}}
 	return &repo
 }
 
