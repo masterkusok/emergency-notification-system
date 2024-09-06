@@ -19,6 +19,10 @@ type AuthContext struct {
 
 const charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
+// generateSalt godoc
+// This function is used to generate random string with len=saltLen.
+// Result will be used as a salt: it will be added to password before
+// hashing for stronger security
 func generateSalt() string {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	b := make([]byte, saltLen)
@@ -28,6 +32,18 @@ func generateSalt() string {
 	return string(b)
 }
 
+// SignUp godoc
+// @ID sign-up
+// @Summary Api Handler for registering new user
+// @Description Creates new user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param data body signUpRequest true "Data for signing up"
+// @Success 200 {object} nil
+// @Failure 400 {object} nil
+// @Failure 500 {object} nil
+// @Router /api/v1/auth/register [post]
 func (h *AuthHandler) SignUp(c echo.Context) error {
 	request := new(signUpRequest)
 	if err := c.Bind(request); err != nil {
@@ -47,6 +63,17 @@ func (h *AuthHandler) SignUp(c echo.Context) error {
 	return c.JSON(http.StatusOK, nil)
 }
 
+// SignIn godoc
+// @ID sign-in
+// @Summary Api handler for signing in
+// @Description Generates jwt-token based on password and username
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param data body signInRequest true "Data for signing in"
+// @Success 200 {object} nil
+// @Failure 400 {object} nil
+// @Router /api/v1/auth/login [post]
 func (h *AuthHandler) SignIn(c echo.Context) error {
 	request := new(signInRequest)
 	if err := c.Bind(request); err != nil {
@@ -84,18 +111,4 @@ func (h *AuthHandler) SignIn(c echo.Context) error {
 	}
 	response.Seed(true, tokenStr, "successful")
 	return c.JSON(http.StatusOK, response)
-}
-
-func (h *AuthHandler) CurrentUser(c echo.Context) error {
-	cont := c.(*AuthContext)
-	if cont.IsAuthenticated {
-		response := new(userResponse)
-		user, err := h.provider.GetUserById(cont.Id)
-		if err != nil {
-			return err
-		}
-		response.Seed(user)
-		return c.JSON(http.StatusOK, response)
-	}
-	return c.JSON(http.StatusForbidden, nil)
 }

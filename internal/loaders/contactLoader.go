@@ -1,3 +1,4 @@
+// Package loaders provides functions to parse contact data from different types of files
 package loaders
 
 import (
@@ -29,6 +30,8 @@ func CreateContactLoader() *ContactLoader {
 	return &cl
 }
 
+// ParseFrom godoc
+// This method is used to parse contact data from file of specific format
 func (c *ContactLoader) ParseFrom(reader io.Reader, format int) ([]entities.Contact, error) {
 	if format < 0 || format >= len(c.parsers) {
 		return nil, fmt.Errorf("wrong parse format")

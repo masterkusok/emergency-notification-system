@@ -1,3 +1,4 @@
+// Package middleware contains all middleware handlers for api
 package middleware
 
 import (

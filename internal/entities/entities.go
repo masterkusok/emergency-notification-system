@@ -1,7 +1,7 @@
+// Package entities contains all base structures
 package entities
 
 import (
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -13,8 +13,7 @@ const (
 )
 
 type Contact struct {
-	gorm.Model
-	ID        uint      `json:"-"`
+	ID        uint      `json:"id"`
 	UserID    uint      `json:"-"`
 	User      User      `json:"-"`
 	Platform  int       `json:"platform"`
@@ -25,7 +24,6 @@ type Contact struct {
 }
 
 type Template struct {
-	gorm.Model
 	ID        uint      `json:"id"`
 	Text      string    `validate:"required" json:"text"`
 	UserID    uint      `json:"-"`
@@ -35,7 +33,6 @@ type Template struct {
 }
 
 type User struct {
-	gorm.Model
 	ID           uint
 	Username     string `gorm:"unique"`
 	Salt         string

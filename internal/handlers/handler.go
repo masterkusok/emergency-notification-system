@@ -1,3 +1,4 @@
+// Package handlers provides all functions for handling api requests
 package handlers
 
 import (

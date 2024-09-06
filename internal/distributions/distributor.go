@@ -1,3 +1,5 @@
+// Package distributions provides functionality to send messages on different platforms.
+// TODO: realize concrete distributors
 package distributions
 
 import (
