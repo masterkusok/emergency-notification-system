@@ -17,17 +17,17 @@ type Contact struct {
 	UserID    uint      `json:"-"`
 	User      User      `json:"-"`
 	Platform  int       `json:"platform"`
-	Name      string    `json:"name" validate:"required"`
-	Address   string    `json:"address" validate:"required"`
+	Name      string    `json:"name"`
+	Address   string    `json:"address"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
 
 type Template struct {
 	ID        uint      `json:"id"`
-	Text      string    `validate:"required" json:"text"`
+	Text      string    `json:"text"`
 	UserID    uint      `json:"-"`
-	User      User      `validate:"required" json:"-"`
+	User      User      `json:"-"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }

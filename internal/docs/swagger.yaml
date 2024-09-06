@@ -163,6 +163,32 @@ paths:
       summary: Updates specific contact data
       tags:
       - contacts
+  /ap1/v1/distribute:
+    post:
+      consumes:
+      - application/json
+      description: Sends message with template text to all contacts in users list
+      operationId: distribute
+      parameters:
+      - description: Id of template to be distributed
+        in: path
+        name: templateId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JwtAuth: []
+      summary: Distributes template message
+      tags:
+      - distribution
   /ap1/v1/templates:
     get:
       consumes:

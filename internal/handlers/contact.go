@@ -76,26 +76,26 @@ func (h *ContactHandler) GetUserContacts(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
-// DeleteContacts godoc
+// DeleteContact godoc
 // @ID delete-contacts
-// @Summary Deletes list of contacts
-// @Description Deletes list of contacts, by their ids
+// @Summary Deletes contact by its id
+// @Description Deletes contact by its id
 // @Tags contacts
 // @Accept json
 // @Produce json
-// @Param list body deleteContactsRequest true "List of contacts to be deleted"
+// @Param list path contactId true "Target id"
 // @Success 200 {object} nil
 // @Failure 400 {object} nil
 // @Failure 500 {object} nil
 // @Security JwtAuth
 // @Router /ap1/v1/contacts [delete]
-func (h *ContactHandler) DeleteContacts(c echo.Context) error {
-	request := new(deleteContactsRequest)
-	if err := c.Bind(&request); err != nil {
+func (h *ContactHandler) DeleteContact(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("contactId"))
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
 
-	err := h.provider.DeleteContacts(request.IdList)
+	err = h.provider.DeleteContact(uint(id))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, nil)
 	}
@@ -127,7 +127,12 @@ func (h *ContactHandler) UpdateContact(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
 
-	if err = h.provider.UpdateContact(uint(contactId), request.Contact.Name, request.Contact.Address); err != nil {
+	err = c.Validate(request)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	if err = h.provider.UpdateContact(uint(contactId), request.NewName, request.NewAddress); err != nil {
 		return err
 	}
 	return c.JSON(http.StatusOK, nil)

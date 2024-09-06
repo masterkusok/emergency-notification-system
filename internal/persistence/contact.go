@@ -31,7 +31,7 @@ func (c *ContactRepository) CreateContacts(userId uint, contacts []entities.Cont
 	return ctx.Error
 }
 
-func (c *ContactRepository) DeleteContacts(id []uint) error {
+func (c *ContactRepository) DeleteContact(id uint) error {
 	ctx := c.db.Delete(&entities.Contact{}, id)
 	return ctx.Error
 }

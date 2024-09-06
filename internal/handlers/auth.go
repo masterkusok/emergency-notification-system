@@ -49,7 +49,10 @@ func (h *AuthHandler) SignUp(c echo.Context) error {
 	if err := c.Bind(request); err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
-
+	err := c.Validate(request)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
 	salt := generateSalt()
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password+salt), bcrypt.DefaultCost)
 	if err != nil {
@@ -81,6 +84,11 @@ func (h *AuthHandler) SignIn(c echo.Context) error {
 	}
 
 	response := new(signInResponse)
+	err := c.Validate(request)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
 	user, err := h.provider.GetUserByName(request.Name)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)

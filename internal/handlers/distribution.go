@@ -6,6 +6,19 @@ import (
 	"strconv"
 )
 
+// Distribute godoc
+// @ID distribute
+// @Summary Distributes template message
+// @Description Sends message with template text to all contacts in users list
+// @Tags distribution
+// @Accept json
+// @Produce json
+// @Param templateId path integer true "Id of template to be distributed"
+// @Success 200 {object} nil
+// @Failure 400 {object} nil
+// @Failure 500 {object} nil
+// @Security JwtAuth
+// @Router /ap1/v1/distribute [post]
 func (d *DistributionHandler) Distribute(c echo.Context) error {
 	userId := c.(*AuthContext).Id
 	templateId, err := strconv.Atoi(c.Param("templateId"))

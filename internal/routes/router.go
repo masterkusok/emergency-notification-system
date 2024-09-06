@@ -24,7 +24,7 @@ func New(contactHandler *handlers.ContactHandler, templateHandler *handlers.Temp
 	// contact routes
 	authGroup.POST("/contacts", contactHandler.LoadContacts)
 	authGroup.GET("/contacts", contactHandler.GetUserContacts)
-	authGroup.DELETE("/contacts", contactHandler.DeleteContacts)
+	authGroup.DELETE("/contacts", contactHandler.DeleteContact)
 	authGroup.PUT("/contacts/:contactId", contactHandler.UpdateContact)
 
 	// template routes
@@ -40,5 +40,8 @@ func New(contactHandler *handlers.ContactHandler, templateHandler *handlers.Temp
 
 	// swagger
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
+	// validator
+	e.Validator = NewValidator()
 	return e
 }

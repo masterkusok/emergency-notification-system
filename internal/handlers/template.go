@@ -49,8 +49,12 @@ func (h *TemplateHandler) CreateTemplate(c echo.Context) error {
 	if err := c.Bind(request); err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
+	err := c.Validate(request)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
 
-	err := h.provider.CreateTemplate(uint(userId), request.Text)
+	err = h.provider.CreateTemplate(uint(userId), request.Text)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, nil)
 	}

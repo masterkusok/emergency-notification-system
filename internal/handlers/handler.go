@@ -10,7 +10,7 @@ import (
 type contactProvider interface {
 	CreateContacts(uint, []entities.Contact) error
 	GetUserContacts(uint) ([]entities.Contact, error)
-	DeleteContacts([]uint) error
+	DeleteContact(uint) error
 	UpdateContact(id uint, name, address string) error
 }
 

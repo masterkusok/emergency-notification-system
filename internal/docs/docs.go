@@ -175,6 +175,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/ap1/v1/distribute": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "Sends message with template text to all contacts in users list",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "distribution"
+                ],
+                "summary": "Distributes template message",
+                "operationId": "distribute",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Id of template to be distributed",
+                        "name": "templateId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/ap1/v1/templates": {
             "get": {
                 "security": [

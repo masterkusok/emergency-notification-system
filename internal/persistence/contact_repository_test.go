@@ -5,6 +5,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
+	"math/rand"
 	"testing"
 )
 
@@ -124,22 +125,21 @@ func TestContactRepository_DeleteContact(t *testing.T) {
 		t.Fail()
 	}
 
-	idList := make([]uint, len(repoContacts))
-	for i, contact := range repoContacts {
-		idList[i] = contact.ID
-	}
+	randomId := repoContacts[rand.Intn(len(repoContacts))].ID
 
-	err = contactRepo.DeleteContacts(idList)
+	err = contactRepo.DeleteContact(randomId)
 	if err != nil {
 		log.Println("Failed to delete contacts:", err)
 		t.Fail()
 	}
 
 	dbContacts := []entities.Contact{}
-	result := contactDb.Find(&dbContacts)
-	if result.RowsAffected != 0 {
-		log.Println("Expected 0 contacts, found:", result.RowsAffected)
-		t.Fail()
+	contactDb.Find(&dbContacts)
+	for _, contact := range dbContacts {
+		if contact.ID == randomId {
+			log.Println("Failed to delete random id")
+			t.Fail()
+		}
 	}
 }
 
