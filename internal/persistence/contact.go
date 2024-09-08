@@ -39,10 +39,10 @@ func (c *ContactRepository) DeleteContact(id uint) error {
 	return ctx.Error
 }
 
-func (c *ContactRepository) UpdateContact(id uint, name, address string) error {
+func (c *ContactRepository) UpdateContact(id uint, name, address string) (*entities.Contact, error) {
 	contact, err := c.GetSingleContact(id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if name != "" {
 		contact.Name = name
@@ -51,5 +51,5 @@ func (c *ContactRepository) UpdateContact(id uint, name, address string) error {
 		contact.Address = address
 	}
 	ctx := c.db.Save(contact)
-	return ctx.Error
+	return &contact, ctx.Error
 }

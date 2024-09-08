@@ -11,7 +11,7 @@ type contactProvider interface {
 	CreateContacts(uint, []entities.Contact) error
 	GetUserContacts(uint) ([]entities.Contact, error)
 	DeleteContact(uint) error
-	UpdateContact(id uint, name, address string) error
+	UpdateContact(id uint, name, address string) (*entities.Contact, error)
 }
 
 type ContactHandler struct {
@@ -24,7 +24,7 @@ func NewContactHandler(provider contactProvider, loader *loaders.ContactLoader) 
 }
 
 type templateProvider interface {
-	CreateTemplate(userId uint, text string) error
+	CreateTemplate(userId uint, text string) (*entities.Template, error)
 	DeleteTemplate(templateId uint) error
 	GetUserTemplates(userId uint) ([]entities.Template, error)
 }

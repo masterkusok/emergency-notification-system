@@ -47,9 +47,13 @@ func (h *ContactHandler) LoadContacts(c echo.Context) error {
 
 	contacts, err := h.loader.ParseFrom(src, extension)
 	if err := h.provider.CreateContacts(userId, contacts); err != nil {
-		return err
+		return c.JSON(http.StatusInternalServerError, err)
 	}
-	return c.JSON(http.StatusCreated, nil)
+
+	response := new(manyContactsResponse)
+	response.Seed(contacts)
+
+	return c.JSON(http.StatusCreated, response)
 }
 
 // GetUserContacts godoc
@@ -118,13 +122,14 @@ func (h *ContactHandler) DeleteContact(c echo.Context) error {
 // @Router /api/v1/contacts [put]
 func (h *ContactHandler) UpdateContact(c echo.Context) error {
 	contactId, err := strconv.Atoi(c.Param(":contactId"))
+	response := new(singleContactResponse)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, nil)
+		return c.JSON(http.StatusBadRequest, err)
 	}
 
 	request := new(updateContactRequest)
 	if err = c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, nil)
+		return c.JSON(http.StatusBadRequest, err)
 	}
 
 	err = c.Validate(request)
@@ -132,8 +137,8 @@ func (h *ContactHandler) UpdateContact(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	if err = h.provider.UpdateContact(uint(contactId), request.NewName, request.NewAddress); err != nil {
-		return err
+	if response.Contact, err = h.provider.UpdateContact(uint(contactId), request.NewName, request.NewAddress); err != nil {
+		return c.JSON(http.StatusInternalServerError, response)
 	}
 	return c.JSON(http.StatusOK, nil)
 }

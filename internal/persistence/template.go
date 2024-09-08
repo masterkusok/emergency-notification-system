@@ -20,10 +20,10 @@ func (t *TemplateRepository) GetUserTemplates(userId uint) ([]entities.Template,
 	return templates, ctx.Error
 }
 
-func (t *TemplateRepository) CreateTemplate(userId uint, text string) error {
+func (t *TemplateRepository) CreateTemplate(userId uint, text string) (*entities.Template, error) {
 	template := &entities.Template{UserID: userId, Text: text}
 	ctx := t.db.Create(template)
-	return ctx.Error
+	return template, ctx.Error
 }
 
 func (t *TemplateRepository) DeleteTemplate(templateId uint) error {

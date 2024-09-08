@@ -45,19 +45,22 @@ func (h *TemplateHandler) GetUserTemplates(c echo.Context) error {
 func (h *TemplateHandler) CreateTemplate(c echo.Context) error {
 	userId := c.(*AuthContext).Id
 	request := new(createTemplateRequest)
+	response := new(singleTemplateResponse)
 	if err := c.Bind(request); err != nil {
-		return c.JSON(http.StatusBadRequest, nil)
+		return c.JSON(http.StatusBadRequest, err)
 	}
 	err := c.Validate(request)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = h.provider.CreateTemplate(uint(userId), request.Text)
+	template, err := h.provider.CreateTemplate(uint(userId), request.Text)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, nil)
+		return c.JSON(http.StatusInternalServerError, err)
 	}
-	return c.JSON(http.StatusCreated, nil)
+	response.Seed(true, template)
+
+	return c.JSON(http.StatusCreated, response)
 }
 
 // DeleteTemplate godoc

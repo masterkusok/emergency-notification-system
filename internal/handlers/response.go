@@ -2,6 +2,32 @@ package handlers
 
 import "github.com/masterkusok/emergency-notification-system/internal/entities"
 
+type distributionResponse struct {
+	SuccessfulCount int    `json:"successful_count"`
+	FailedCount     int    `json:"failed_count"`
+	FailedIdList    []uint `json:"failed_id_list"`
+}
+
+type singleTemplateResponse struct {
+	IsSuccessful bool               `json:"is_successful"`
+	Template     *entities.Template `json:"template"`
+}
+
+func (r *singleTemplateResponse) Seed(isSuccessful bool, template *entities.Template) {
+	r.IsSuccessful = isSuccessful
+	r.Template = template
+}
+
+type singleContactResponse struct {
+	IsSuccessful bool              `json:"is_successful"`
+	Contact      *entities.Contact `json:"contact"`
+}
+
+func (r *singleContactResponse) Seed(isSuccessful bool, contact *entities.Contact) {
+	r.IsSuccessful = isSuccessful
+	r.Contact = contact
+}
+
 type userResponse struct {
 	Username string `json:"username"`
 	Id       uint   `json:"id"`

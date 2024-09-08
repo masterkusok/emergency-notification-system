@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	TG_TOKEN       = "your tg token"
-	EXOLVE_API_KEY = "key"
-	EXOLVE_NUMBER  = "77777777777"
-	GMAIL_ADDRESS  = "example@gmail.com"
-	GMAIL_PASSWORD = "pass"
+	TG_TOKEN       = "_"
+	EXOLVE_API_KEY = "_"
+	EXOLVE_NUMBER  = "_"
+	GMAIL_ADDRESS  = "_"
+	GMAIL_PASSWORD = "_"
 )
 
 // @title ENS API

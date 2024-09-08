@@ -42,12 +42,16 @@ func (d *DistributionHandler) Distribute(c echo.Context) error {
 	if len(targetTemplateText) == 0 {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
-
+	response := new(distributionResponse)
+	response.FailedIdList = make([]uint, 0)
 	for _, contact := range user.Contacts {
 		err = d.distributor.Send(targetTemplateText, contact)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, nil)
+			response.FailedIdList = append(response.FailedIdList, contact.ID)
+			response.FailedCount++
+			continue
 		}
+		response.SuccessfulCount++
 	}
-	return c.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusOK, response)
 }
