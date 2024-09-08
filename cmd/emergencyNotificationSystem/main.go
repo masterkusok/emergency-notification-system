@@ -11,13 +11,21 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	TG_TOKEN       = "your tg token"
+	EXOLVE_API_KEY = "key"
+	EXOLVE_NUMBER  = "77777777777"
+	GMAIL_ADDRESS  = "example@gmail.com"
+	GMAIL_PASSWORD = "pass"
+)
+
 // @title ENS API
 // @version 1.0
 // @description This is API for an Emergency Notification System app
 // @host localhost:1323
 // @BasePath /
 
-// @securityDefinitions.jwt JwtAuth
+// @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
 
@@ -27,13 +35,33 @@ func main() {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&entities.User{}, &entities.Contact{}, &entities.Template{})
+	db.AutoMigrate(&entities.User{}, &entities.Contact{}, &entities.Template{}, &entities.TelegramChat{})
 
-	loader := loaders.CreateContactLoader()
-	distributor := distributions.CreateDistributor()
+	// repositories init
+	tgRepo := persistence.CreateTelegramChatRepository(db)
 	contactRepo := persistence.CreateContactRepository(db)
 	templateRepo := persistence.CreateTemplateRepository(db)
 	userRepo := persistence.CreateUserRepository(db)
+
+	// loader init
+	loader := loaders.CreateContactLoader()
+
+	// distributors init
+	tg, err := distributions.NewTelegramDistributor(tgRepo, TG_TOKEN)
+	if err != nil {
+		panic(err)
+	}
+
+	sms, err := distributions.NewSMSDistributor(EXOLVE_API_KEY, EXOLVE_NUMBER)
+	if err != nil {
+		panic(err)
+	}
+
+	email, err := distributions.NewSMTPDistributor(GMAIL_ADDRESS, GMAIL_PASSWORD)
+	if err != nil {
+		panic(err)
+	}
+	distributor := distributions.CreateDistributor(tg, sms, email)
 
 	router := routes.New(handlers.NewContactHandler(contactRepo, loader), handlers.NewTemplateHandler(templateRepo),
 		handlers.NewAuthHandler(userRepo), handlers.NewDistributionHandler(distributor, userRepo))

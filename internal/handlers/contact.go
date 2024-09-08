@@ -24,8 +24,8 @@ var allowedExtensions = map[string]int{
 // @Success 201 {object} nil
 // @Failure 400 {object} nil
 // @Failure 500 {object} nil
-// @Security JwtAuth
-// @Router /ap1/v1/contacts [post]
+// @Security BearerAuth
+// @Router /api/v1/contacts [post]
 func (h *ContactHandler) LoadContacts(c echo.Context) error {
 	userId := c.(*AuthContext).Id
 
@@ -61,8 +61,8 @@ func (h *ContactHandler) LoadContacts(c echo.Context) error {
 // @Produce json
 // @Success 200 {object} manyContactsResponse
 // @Failure 400 {object} nil
-// @Security JwtAuth
-// @Router /ap1/v1/contacts [get]
+// @Security BearerAuth
+// @Router /api/v1/contacts [get]
 func (h *ContactHandler) GetUserContacts(c echo.Context) error {
 	userId := c.(*AuthContext).Id
 
@@ -83,12 +83,12 @@ func (h *ContactHandler) GetUserContacts(c echo.Context) error {
 // @Tags contacts
 // @Accept json
 // @Produce json
-// @Param list path contactId true "Target id"
+// @Param list path int true "Target id"
 // @Success 200 {object} nil
 // @Failure 400 {object} nil
 // @Failure 500 {object} nil
-// @Security JwtAuth
-// @Router /ap1/v1/contacts [delete]
+// @Security BearerAuth
+// @Router /api/v1/contacts [delete]
 func (h *ContactHandler) DeleteContact(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("contactId"))
 	if err != nil {
@@ -110,12 +110,12 @@ func (h *ContactHandler) DeleteContact(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param data body updateContactRequest true "New contact data"
-// @Param contactID path integer true "Contact Id"
+// @Param id path int true "Contact Id"
 // @Success 200 {object} nil
 // @Failure 400 {object} nil
 // @Failure 500 {object} nil
-// @Security JwtAuth
-// @Router /ap1/v1/contacts [put]
+// @Security BearerAuth
+// @Router /api/v1/contacts [put]
 func (h *ContactHandler) UpdateContact(c echo.Context) error {
 	contactId, err := strconv.Atoi(c.Param(":contactId"))
 	if err != nil {

@@ -10,21 +10,15 @@ definitions:
         type: string
       platform:
         type: integer
-    required:
-    - address
-    - name
     type: object
   handlers.createTemplateRequest:
     properties:
       text:
+        maxLength: 256
+        minLength: 1
         type: string
-    type: object
-  handlers.deleteContactsRequest:
-    properties:
-      id_list:
-        items:
-          type: integer
-        type: array
+    required:
+    - text
     type: object
   handlers.manyContactsResponse:
     properties:
@@ -43,14 +37,23 @@ definitions:
   handlers.signUpRequest:
     properties:
       password:
+        maxLength: 64
+        minLength: 5
         type: string
       username:
         type: string
+    required:
+    - password
+    - username
     type: object
   handlers.updateContactRequest:
     properties:
-      contact:
-        $ref: '#/definitions/entities.Contact'
+      new_address:
+        maxLength: 128
+        minLength: 0
+        type: string
+      new_name:
+        type: string
     type: object
 host: localhost:1323
 info:
@@ -59,185 +62,6 @@ info:
   title: ENS API
   version: "1.0"
 paths:
-  /ap1/v1/contacts:
-    delete:
-      consumes:
-      - application/json
-      description: Deletes list of contacts, by their ids
-      operationId: delete-contacts
-      parameters:
-      - description: List of contacts to be deleted
-        in: body
-        name: list
-        required: true
-        schema:
-          $ref: '#/definitions/handlers.deleteContactsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      security:
-      - JwtAuth: []
-      summary: Deletes list of contacts
-      tags:
-      - contacts
-    get:
-      consumes:
-      - application/json
-      description: Returns list of all contacts, registered for specific user
-      operationId: get-user-contacts
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/handlers.manyContactsResponse'
-        "400":
-          description: Bad Request
-      security:
-      - JwtAuth: []
-      summary: Returns list of all user contacts
-      tags:
-      - contacts
-    post:
-      consumes:
-      - multipart/form-data
-      description: Load contacts from file types, described in allowed extensions,
-        runs parser and saves them to db.
-      operationId: load-contacts
-      parameters:
-      - description: Contact file, allowed extensions are .json, .csv, .xlsx
-        in: formData
-        name: file
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      security:
-      - JwtAuth: []
-      summary: Load users contacts
-      tags:
-      - contacts
-    put:
-      consumes:
-      - application/json
-      description: Can be used to change specific contact field values based on its
-        id
-      operationId: update-contact
-      parameters:
-      - description: New contact data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/handlers.updateContactRequest'
-      - description: Contact Id
-        in: path
-        name: contactID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      security:
-      - JwtAuth: []
-      summary: Updates specific contact data
-      tags:
-      - contacts
-  /ap1/v1/distribute:
-    post:
-      consumes:
-      - application/json
-      description: Sends message with template text to all contacts in users list
-      operationId: distribute
-      parameters:
-      - description: Id of template to be distributed
-        in: path
-        name: templateId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      security:
-      - JwtAuth: []
-      summary: Distributes template message
-      tags:
-      - distribution
-  /ap1/v1/templates:
-    get:
-      consumes:
-      - application/json
-      description: Returns list of user templates
-      operationId: get-templates
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "500":
-          description: Internal Server Error
-      security:
-      - JwtAuth: []
-      summary: Returns list of user templates
-      tags:
-      - templates
-    post:
-      consumes:
-      - application/json
-      description: Deletes template by its id
-      operationId: delete-template
-      parameters:
-      - description: New template data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/handlers.createTemplateRequest'
-      - description: Template id
-        in: path
-        name: templateID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      security:
-      - JwtAuth: []
-      summary: Deletes template
-      tags:
-      - templates
   /api/v1/auth/login:
     post:
       consumes:
@@ -286,4 +110,207 @@ paths:
       summary: Api Handler for registering new user
       tags:
       - auth
+  /api/v1/contacts:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes contact by its id
+      operationId: delete-contacts
+      parameters:
+      - description: Target id
+        in: path
+        name: list
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Deletes contact by its id
+      tags:
+      - contacts
+    get:
+      consumes:
+      - application/json
+      description: Returns list of all contacts, registered for specific user
+      operationId: get-user-contacts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.manyContactsResponse'
+        "400":
+          description: Bad Request
+      security:
+      - BearerAuth: []
+      summary: Returns list of all user contacts
+      tags:
+      - contacts
+    post:
+      consumes:
+      - multipart/form-data
+      description: Load contacts from file types, described in allowed extensions,
+        runs parser and saves them to db.
+      operationId: load-contacts
+      parameters:
+      - description: Contact file, allowed extensions are .json, .csv, .xlsx
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Load users contacts
+      tags:
+      - contacts
+    put:
+      consumes:
+      - application/json
+      description: Can be used to change specific contact field values based on its
+        id
+      operationId: update-contact
+      parameters:
+      - description: New contact data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.updateContactRequest'
+      - description: Contact Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Updates specific contact data
+      tags:
+      - contacts
+  /api/v1/distribute:
+    post:
+      consumes:
+      - application/json
+      description: Sends message with template text to all contacts in users list
+      operationId: distribute
+      parameters:
+      - description: Id of template to be distributed
+        in: path
+        name: templateId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Distributes template message
+      tags:
+      - distribution
+  /api/v1/templates:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes template by its id
+      operationId: delete-template
+      parameters:
+      - description: Template id
+        in: path
+        name: templateID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Deletes template
+      tags:
+      - templates
+    get:
+      consumes:
+      - application/json
+      description: Returns list of user templates
+      operationId: get-templates
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Returns list of user templates
+      tags:
+      - templates
+    post:
+      consumes:
+      - application/json
+      description: Creates new template
+      operationId: create-template
+      parameters:
+      - description: New template data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.createTemplateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Creates new template
+      tags:
+      - templates
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -9,7 +9,6 @@ const (
 	TG = iota
 	EMAIL
 	SMS
-	PUSH
 )
 
 type Contact struct {
@@ -30,15 +29,4 @@ type Template struct {
 	User      User      `json:"-"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
-}
-
-type User struct {
-	ID           uint
-	Username     string `gorm:"unique"`
-	Salt         string
-	PasswordHash string
-	Templates    []Template
-	Contacts     []Contact
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
 }

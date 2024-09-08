@@ -25,7 +25,6 @@ func TestCsvParser_Parse(t *testing.T) {
 		entities.Contact{Name: "contact_1", Platform: entities.TG, Address: "@contact_1"},
 		entities.Contact{Name: "contact_2", Platform: entities.EMAIL, Address: "@contact_2"},
 		entities.Contact{Name: "contact_3", Platform: entities.SMS, Address: "@contact_3"},
-		entities.Contact{Name: "contact_4", Platform: entities.PUSH, Address: "@contact_4"},
 	}
 	csvString := ""
 	for _, contact := range expectedContacts {
@@ -78,7 +77,6 @@ func TestJsonParser_Parse(t *testing.T) {
 		entities.Contact{Name: "contact_1", Platform: entities.TG, Address: "@contact_1"},
 		entities.Contact{Name: "contact_2", Platform: entities.EMAIL, Address: "@contact_2"},
 		entities.Contact{Name: "contact_3", Platform: entities.SMS, Address: "@contact_3"},
-		entities.Contact{Name: "contact_4", Platform: entities.PUSH, Address: "@contact_4"},
 	}
 	jsonEncoded, _ := json.Marshal(expectedContacts)
 	os.WriteFile("temp.json", jsonEncoded, 0644)
@@ -131,7 +129,6 @@ func TestXlsxParser_Parse(t *testing.T) {
 		entities.Contact{Name: "contact_1", Platform: entities.TG, Address: "@contact_1"},
 		entities.Contact{Name: "contact_2", Platform: entities.EMAIL, Address: "@contact_2"},
 		entities.Contact{Name: "contact_3", Platform: entities.SMS, Address: "@contact_3"},
-		entities.Contact{Name: "contact_4", Platform: entities.PUSH, Address: "@contact_4"},
 	}
 	xlsFile := excelize.NewFile()
 	for i := 0; i < len(expectedContacts); i++ {

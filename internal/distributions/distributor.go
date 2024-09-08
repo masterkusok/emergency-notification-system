@@ -25,13 +25,12 @@ type Distributor struct {
 	senders []Sender
 }
 
-func CreateDistributor() *Distributor {
+func CreateDistributor(tg *TelegramDistributor, sms *SMSDistributor, email *SMTPDistributor) *Distributor {
 	d := Distributor{}
-	d.senders = make([]Sender, 4)
-	d.senders[entities.TG] = mockSender{}
-	d.senders[entities.SMS] = mockSender{}
-	d.senders[entities.EMAIL] = mockSender{}
-	d.senders[entities.PUSH] = mockSender{}
+	d.senders = make([]Sender, 3)
+	d.senders[entities.TG] = tg
+	d.senders[entities.SMS] = sms
+	d.senders[entities.EMAIL] = email
 	return &d
 }
 

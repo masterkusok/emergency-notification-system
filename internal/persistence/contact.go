@@ -27,6 +27,9 @@ func (c *ContactRepository) GetUserContacts(userId uint) ([]entities.Contact, er
 }
 
 func (c *ContactRepository) CreateContacts(userId uint, contacts []entities.Contact) error {
+	for i := range contacts {
+		contacts[i].UserID = userId
+	}
 	ctx := c.db.Create(contacts)
 	return ctx.Error
 }

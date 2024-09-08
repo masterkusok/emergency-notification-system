@@ -17,8 +17,8 @@ import (
 // @Success 200 {object} nil
 // @Failure 400 {object} nil
 // @Failure 500 {object} nil
-// @Security JwtAuth
-// @Router /ap1/v1/distribute [post]
+// @Security BearerAuth
+// @Router /api/v1/distribute [post]
 func (d *DistributionHandler) Distribute(c echo.Context) error {
 	userId := c.(*AuthContext).Id
 	templateId, err := strconv.Atoi(c.Param("templateId"))

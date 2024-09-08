@@ -15,8 +15,8 @@ import (
 // @Produce json
 // @Success 200 {object} nil
 // @Failure 500 {object} nil
-// @Security JwtAuth
-// @Router /ap1/v1/templates [get]
+// @Security BearerAuth
+// @Router /api/v1/templates [get]
 func (h *TemplateHandler) GetUserTemplates(c echo.Context) error {
 	userId := c.(*AuthContext).Id
 	templates, err := h.provider.GetUserTemplates(uint(userId))
@@ -40,9 +40,8 @@ func (h *TemplateHandler) GetUserTemplates(c echo.Context) error {
 // @Success 201 {object} nil
 // @Failure 400 {object} nil
 // @Failure 500 {object} nil
-// @Security JwtAuth
-// @Router /ap1/v1/templates [post]
-
+// @Security BearerAuth
+// @Router /api/v1/templates [post]
 func (h *TemplateHandler) CreateTemplate(c echo.Context) error {
 	userId := c.(*AuthContext).Id
 	request := new(createTemplateRequest)
@@ -68,13 +67,12 @@ func (h *TemplateHandler) CreateTemplate(c echo.Context) error {
 // @Tags templates
 // @Accept json
 // @Produce json
-// @Param data body createTemplateRequest true "New template data"
 // @Param templateID path integer true "Template id"
 // @Success 201 {object} nil
 // @Failure 400 {object} nil
 // @Failure 500 {object} nil
-// @Security JwtAuth
-// @Router /ap1/v1/templates [post]
+// @Security BearerAuth
+// @Router /api/v1/templates [delete]
 func (h *TemplateHandler) DeleteTemplate(c echo.Context) error {
 	templateId, err := strconv.Atoi(c.Param("templateId"))
 	if err != nil {
